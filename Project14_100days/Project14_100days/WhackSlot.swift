@@ -30,12 +30,12 @@ class WhackSlot: SKNode {
         cropNode.addChild(charNode)
 
         addChild(cropNode)
-        
-        
     }
     
     func show(hideTime: Double) {
         if isVisible { return }
+        
+        mud()
         
         charNode.xScale = 1
         charNode.yScale = 1
@@ -59,7 +59,10 @@ class WhackSlot: SKNode {
     
     func hide() {
         if !isVisible { return }
-
+        
+        mud()
+        
+        //charNode.run(SKAction.moveBy(x: 0, y: -80, duration: Double.random(in: 0.01...1)))
         charNode.run(SKAction.moveBy(x: 0, y: -80, duration: 0.05))
         isVisible = false
     }
@@ -67,9 +70,36 @@ class WhackSlot: SKNode {
     func hit() {
         isHit = true
 
+        sparks()
+        
         let delay = SKAction.wait(forDuration: 0.25)
         let hide = SKAction.moveBy(x: 0, y: -80, duration: 0.5)
-        let notVisible = SKAction.run { [unowned self] in self.isVisible = false }
-        charNode.run(SKAction.sequence([delay, hide, notVisible]))
+        let notVisible = SKAction.run { [weak self] in
+            self?.isVisible = false
+        }
+        
+        let sequence = SKAction.sequence([delay, hide, notVisible])
+        charNode.run(sequence)
+    }
+    
+
+    func sparks() {
+        if let sparks = SKEmitterNode(fileNamed: "my_sparks") {
+            let deploy = SKAction.run{self.addChild(sparks)}
+            let delay = SKAction.wait(forDuration: 1.5)
+            let delete = SKAction.run {self.removeChildren(in: [sparks])}
+            
+            run(SKAction.sequence([deploy, delay, delete]))
+            
+        }
+    }
+    
+    func mud() {
+        if let mud = SKEmitterNode(fileNamed: "penguin_appear") {
+            let deploy = SKAction.run{self.addChild(mud)}
+            let delay = SKAction.wait(forDuration: 0.3)
+            let delete = SKAction.run {self.removeChildren(in: [mud])}
+            run(SKAction.sequence([deploy, delay, delete]))
+        }
     }
 }
