@@ -90,11 +90,23 @@ class GameScene: SKScene {
             for slot in slots {
                 slot.hide()
             }
-
+            
+            removeChildren(in: [gameScore])
+            
             let gameOver = SKSpriteNode(imageNamed: "gameOver")
             gameOver.position = CGPoint(x: 512, y: 384)
             gameOver.zPosition = 1
             addChild(gameOver)
+            
+            let finalScore = SKLabelNode(fontNamed: "Chalkduster")
+            finalScore.text = "Your final score: \(score)"
+            finalScore.fontSize = 46
+            finalScore.position = CGPoint(x: 512, y: 300)
+            finalScore.zPosition = 1
+            
+            addChild(finalScore)
+            
+            run(SKAction.playSoundFileNamed("my_soundeffect_prj14.caf", waitForCompletion:false))
 
             return
         }
